@@ -10,27 +10,22 @@ jobs:
   build-and-push:
     runs-on: self-hosted
     steps:
-      - name: clonar el repo
+      - name: Clonar el repo
         uses: actions/checkout@v4
 
-      - name: login en DockerHub
+      - name: Loguearse en DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: construir y pushear la imagen
+      - name: Construir y pushear la imagen
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/hugo-novas-gonzalez-daw-web:latest
 
-      - name: eliminar contenedor
-        run: |
-          docker stop web-container -ErrorAction SilentlyContinue
-          docker rm web-container -ErrorAction SilentlyContinue
-
-      - name: ejecutar el contenedor en localhost:8888
+      - name: Ejecutar el contenedor en localhost:8888
         run: |
           docker run -d -p 8888:80 --name web-container ${{ secrets.DOCKERHUB_USERNAME }}/hugo-novas-gonzalez-daw-web:latest
